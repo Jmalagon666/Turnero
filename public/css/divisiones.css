@@ -1,0 +1,139 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;700&display=swap");
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+}
+html{
+    height: 100%;
+
+}
+
+body {
+ font-family: "Public Sans", sans-serif;
+ font-size: 1.2rem;
+ min-height: 100%;
+
+}
+
+.grid-container > * {
+    box-shadow: -1px 1px 7px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 10px;
+    text-align: center;
+
+}
+.header{
+    grid-area: header;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+ /*    background-color: rgba(0,0,0,0.1); */
+}
+
+.header .imagen{
+    padding-left: 20px;
+}
+/* .header .h1{
+    padding-right: 80px;
+} */
+.nav-bar {
+    list-style: none;
+    display: flex;
+    flex: auto;
+    padding-right: 40px;
+  }
+
+  .hola2 {
+    text-decoration: none;
+   /*  margin-right: 10px; */
+    color: rgba(0,0,0, 0.2);
+  }
+  .hola2 {
+    color: black;
+  }
+
+  .nav-bar li{
+    padding:  20px;
+
+  }
+
+.sidebar{
+    grid-area: sidebar;
+    background-color: white;
+}
+.main {
+    grid-area: main;
+    background-color: white;
+}
+.footer{
+    grid-area: footer;
+    background-color: white;
+}
+
+.grid-container {
+    display: grid;
+    gap: 10px;
+    grid-template-areas:
+    "header"
+/*     "navbar" */
+    "main"
+    "sidebar"
+    "footer";
+
+}
+.contenido{
+    width: 100vw;
+    min-height:72vh;
+    position:fixed;
+    z-index: 1200;
+    background: #fff;
+    margin-top: 14vh;
+    display: flex;
+}
+.video{
+    float: left;
+    width: 60vw;
+    background: #000;
+    min-height: 72vh;
+    z-index: 1300;
+}
+.turnos{
+    float: right;
+    width: 40vw;
+    background: #f2f2f2;
+    min-height: 72vh;
+    z-index: 1400;
+    margin-left: 0.5vw;
+}
+.video-carrousel{
+    width: 60vw;
+    height: 72vh;
+}
+@media (min-width: 600px) {
+    .grid-container {
+       /*  grid-template-columns: 200px auto;
+        grid-template-rows: 100px 50px auto 100px; */
+  /*       grid-template-areas:
+        "header header"
+        "navbar navbar"
+        "main sidebar"
+       "footer footer ";
+ */
+        grid-template:
+       "header header" 100px
+        "main sidebar" 200px
+       "footer footer " 100px / 200px auto;
+    }
+}
+
+@media (min-width: 900px) {
+    .grid-container {
+       grid-template:
+       "header header header" 100px
+        "main main sidebar" auto
+      "footer footer footer " 100px / 200px auto 200px;
+    }
+}
