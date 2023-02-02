@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\Printer;
+use App\Models\TcPrint;
+
 
 
 class TurneroController extends Controller
@@ -20,6 +22,8 @@ class TurneroController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
 
     public function index()
     {
@@ -103,22 +107,59 @@ class TurneroController extends Controller
     }
 
     public function ingresardocumento(request $request){
+        /*dd($request);*/
         $id=turno::orderBy("id","DESC")->take(1)->first();
-       //$id=turno::select('id from turnos order by id desc limit 1')->get();
-        return view('turnero.ingresardocumento',compact('id','request'));
+        $turnoPrint1 = $turnoPrint = $this->validador($request->general);
+        $turno=$turnoPrint['turno'];
+        /*turno::create(["turno" => $turnoPrint['turno'],"documento" => '99999999']);*/
+        $ticket = $this->ticketPrint($turnoPrint['turno'], $turnoPrint['especialidad'], 'TMT2');
+        return view('turnero.ingresardocumento',compact('id','request','ticket','turno'));
     }
+
 
     public function ingresardocumento_1(request $request){
         $id=turno::orderBy("id","DESC")->take(1)->first();
-       //$id=turno::select('id from turnos order by id desc limit 1')->get();
-        return view('turnero.ingresardocumento_1',compact('id','request'));
+        $turnoPrint = $this->validador($request->general);
+        turno::create(["turno" => $turnoPrint['turno'],"documento" => '99999999']);
+        $ticket = $this->ticketPrint($turnoPrint['turno'], $turnoPrint['especialidad'], 'TMT2');
+        return view('turnero.ingresardocumento_1',compact('id','request','ticket'));
+    }
+    public function ticketPrint($position, $category, $print){
+        /*
+            NOMBRE DE LA IMPRESORA
+            Se recomienda:
+                - Que sea el mismo nombre para todas las impresoras
+                - Que sea una varible parametrizada desde el backup o un archivo de configuracion
+        */
+        $print_name = $print;
+
+        //  Informacion asociada la la impresion, en este caso un Digi-turno
+        $info = array(
+            'position' => $position,
+            'category' => $category
+        );
+
+        //  Genera la estructura de impresion
+        $tcprint = new TcPrint();
+        $ticket = $tcprint->getTicketPositionInLine($info);
+
+        $result = [
+            'print_name' =>$print_name,
+            'ticket' => $ticket
+
+        ];
+
+        return $result;
     }
 
     public function tomardoc_post(request $request){
+       /*dd($request->all());*/
+        turno::create(["turno" => $request->tur,"documento" => $request->documento]);
         return view('turnero.principal',compact('request'));
     }
 
     public function tomardoc_post_1(request $request){
+
         return view('turnero.principal_1',compact('request'));
     }
 
@@ -159,21 +200,15 @@ class TurneroController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function validador($request){
+        $dato=$request;
+        $id=0;
+        if ($dato=="GCC") {
 
-    public function store(Request $request)
-    {
-
-
-        $dato_turno = request()->except('_token');
-        $prueba = new turno();
-
-
-
-        if ($request->turno=="GCC") {
-
-            $especialidad="CARDIOLOGÍA";
+            $especialidad="CARDIOLOGIA";
 
             $id=area::orderBy("GCC","DESC")->take(1)->first();
+            //dd($id->GCC);
 
             if ($id==null) {
                 $t=1;
@@ -186,8 +221,7 @@ class TurneroController extends Controller
                 $dato_area->GCC=$t;
                 $dato_area->save();
             }
-
-        } else if ($request->turno=="GCME"){
+        }else if ($dato=="GCME"){
 
             $especialidad="MEDICINA EXTERNA";
 
@@ -204,8 +238,7 @@ class TurneroController extends Controller
                 $dato_area->GCME=$t;
                 $dato_area->save();
             }
-
-        }else if ($request->turno=="GCN"){
+        }else if ($dato=="GCN"){
 
             $especialidad="NEUROLOGÍA";
 
@@ -222,8 +255,7 @@ class TurneroController extends Controller
                 $dato_area->GCN=$t;
                 $dato_area->save();
             }
-
-        }else if ($request->turno=="GCOE"){
+        }else if ($dato=="GCOE"){
 
             $especialidad="OTRAS ESPECIALIDADES";
 
@@ -240,8 +272,7 @@ class TurneroController extends Controller
                 $dato_area->GCOE=$t;
                 $dato_area->save();
             }
-
-        }else if ($request->turno=="GRC"){
+        }else if ($dato=="GRC"){
 
             $especialidad="REHABILITACIÓN CARDÍACA";
 
@@ -250,6 +281,7 @@ class TurneroController extends Controller
             if ($id==null) {
                 $t=1;
                 $dato_area=area::where('id',1)->first();
+                $id=1;
                 area::create(["id" => $t,"GRC" => $t]);
             }else{
                 $t=$id->GRC;
@@ -258,9 +290,7 @@ class TurneroController extends Controller
                 $dato_area->GRC=$t;
                 $dato_area->save();
             }
-
-
-        }else if ($request->turno=="GEC"){
+        }else if ($dato=="GEC"){
             $especialidad="EXAMENES DE CARDIOLOGÍA";
 
             $id=area::orderBy("GEC","DESC")->take(1)->first();
@@ -276,8 +306,7 @@ class TurneroController extends Controller
                 $dato_area->GEC=$t;
                 $dato_area->save();
             }
-
-        } else if ($request->turno=="PCME"){
+        }else if ($dato=="PCME"){
             $especialidad="MEDICINA EXTERNA";
 
             $id=area::orderBy("PCME","DESC")->take(1)->first();
@@ -293,7 +322,7 @@ class TurneroController extends Controller
                 $dato_area->PCME=$t;
                 $dato_area->save();
             }
-        }else if ($request->turno=="PCN"){
+        }else if ($dato=="PCN"){
             $especialidad="NEUROLOGÍA";
 
             $id=area::orderBy("PCN","DESC")->take(1)->first();
@@ -309,12 +338,12 @@ class TurneroController extends Controller
                 $dato_area->PCN=$t;
                 $dato_area->save();
             }
-        }else if ($request->turno=="PCOE"){
+        }else if ($dato=="PCOE"){
             $especialidad="OTRAS ESPECIALIDADES";
 
             $id=area::orderBy("PCOE","DESC")->take(1)->first();
 
-            if ($id==null) {
+            if ($id=0) {
                 $t=1;
                 $dato_area=area::where('id',1)->first();
                 area::create(["id" => $t,"PCOE" => $t]);
@@ -325,7 +354,7 @@ class TurneroController extends Controller
                 $dato_area->PCOE=$t;
                 $dato_area->save();
             }
-        }else if ($request->turno=="PRC"){
+        }else if ($dato=="PRC"){
             $especialidad="REHABILITACIÓN CARDÍACA";
 
             $id=area::orderBy("PRC","DESC")->take(1)->first();
@@ -341,7 +370,7 @@ class TurneroController extends Controller
                 $dato_area->PRC=$t;
                 $dato_area->save();
             }
-        }else if ($request->turno=="PEC"){
+        }else if ($dato=="PEC"){
             $especialidad="EXAMENES DE CARDIOLOGÍA";
 
             $id=area::orderBy("PEC","DESC")->take(1)->first();
@@ -357,9 +386,8 @@ class TurneroController extends Controller
                 $dato_area->PEC=$t;
                 $dato_area->save();
             }
-        }else if ($request->turno=="PCC"){
+        }else if ($dato=="PCC"){
             $especialidad="CARDIOLOGÍA";
-            $vista_tur=1;
 
             $id=area::orderBy("PCC","DESC")->take(1)->first();
 
@@ -374,34 +402,229 @@ class TurneroController extends Controller
                 $dato_area->PCC=$t;
                 $dato_area->save();
             }
-        }elseif ($request->turno=="GA") {
-            $especialidad="asi cita";
-            $vista_tur=2;
+        }else if ($dato=="GA") {
+            $especialidad="IMAGENES";
 
-            //$id=area::orderBy("PCC","DESC")->take(1)->first();
-            $id=1;
+            $id=area::orderBy("GA","DESC")->take(1)->first();
 
             if ($id==null) {
                 $t=1;
-                //$dato_area=area::where('id',1)->first();
-                //area::create(["id" => $t,"GA" => $t]);
+                $dato_area=area::where('id',1)->first();
+                area::create(["id" => $t,"GA" => $t]);
             }else{
-                $t=$id;
-                //$t=$t+1;
-                //$dato_area=area::where('id',1)->first();
-                //$dato_area->GA=$t;
-                //$dato_area->save();
+                $t=$id->GA;
+                $t=$t+1;
+                $dato_area=area::where('id',1)->first();
+                $dato_area->GA=$t;
+                $dato_area->save();
+            }
+        }else if ($dato=="GAI") {
+            $especialidad="ADMISION IMAGENES DIAGNOSTICAS (PISO 1)";
+
+            $id=area::orderBy("GAI","DESC")->take(1)->first();
+
+            if ($id==null) {
+                $t=1;
+                $dato_area=area::where('id',1)->first();
+                area::create(["id" => $t,"GAI" => $t]);
+            }else{
+                $t=$id->GAI;
+                $t=$t+1;
+                $dato_area=area::where('id',1)->first();
+                $dato_area->GAI=$t;
+                $dato_area->save();
+            }
+        }else if ($dato=="GAU") {
+            $especialidad="UNIDAD DIGESTIVA Y RESONANCIA";
+
+            $id=area::orderBy("GAU","DESC")->take(1)->first();
+
+            if ($id==null) {
+                $t=1;
+                $dato_area=area::where('id',1)->first();
+                area::create(["id" => $t,"GAU" => $t]);
+            }else{
+                $t=$id->GAU;
+                $t=$t+1;
+                $dato_area=area::where('id',1)->first();
+                $dato_area->GAU=$t;
+                $dato_area->save();
+            }
+        }else if ($dato=="GER") {
+            $especialidad="ENTREGA DE RESULTADOS";
+
+            $id=area::orderBy("GER","DESC")->take(1)->first();
+
+            if ($id==null) {
+                $t=1;
+                $dato_area=area::where('id',1)->first();
+                area::create(["id" => $t,"GER" => $t]);
+            }else{
+                $t=$id->GER;
+                $t=$t+1;
+                $dato_area=area::where('id',1)->first();
+                $dato_area->GER=$t;
+                $dato_area->save();
+            }
+        }else if ($dato=="GL") {
+            $especialidad="LABORATORIO";
+
+            $id=area::orderBy("GL","DESC")->take(1)->first();
+
+            if ($id==null) {
+                $t=1;
+                $dato_area=area::where('id',1)->first();
+                area::create(["id" => $t,"GL" => $t]);
+            }else{
+                $t=$id->GL;
+                $t=$t+1;
+                $dato_area=area::where('id',1)->first();
+                $dato_area->GL=$t;
+                $dato_area->save();
+            }
+        }else if ($dato=="GAN") {
+            $especialidad="ANGIOGRAFIA";
+
+            $id=area::orderBy("GL","DESC")->take(1)->first();
+
+            if ($id==null) {
+                $t=1;
+                $dato_area=area::where('id',1)->first();
+                area::create(["id" => $t,"GAN" => $t]);
+            }else{
+                $t=$id->GAN;
+                $t=$t+1;
+                $dato_area=area::where('id',1)->first();
+                $dato_area->GAN=$t;
+                $dato_area->save();
+            }
+        }else if ($dato=="PA") {
+            $especialidad="IMAGENES";
+
+            $id=area::orderBy("PA","DESC")->take(1)->first();
+
+            if ($id==null) {
+                $t=1;
+                $dato_area=area::where('id',1)->first();
+                area::create(["id" => $t,"PA" => $t]);
+            }else{
+                $t=$id->PA;
+                $t=$t+1;
+                $dato_area=area::where('id',1)->first();
+                $dato_area->PA=$t;
+                $dato_area->save();
+            }
+        }else if ($dato=="PAI") {
+            $especialidad="ADMISION IMAGENES DIAGNOSTICAS (PISO 1)";
+
+            $id=area::orderBy("PAI","DESC")->take(1)->first();
+
+            if ($id==null) {
+                $t=1;
+                $dato_area=area::where('id',1)->first();
+                area::create(["id" => $t,"PAI" => $t]);
+            }else{
+                $t=$id->PAI;
+                $t=$t+1;
+                $dato_area=area::where('id',1)->first();
+                $dato_area->PAI=$t;
+                $dato_area->save();
+            }
+        }else if ($dato=="PAU") {
+            $especialidad="UNIDAD DIGESTIVA Y RESONANCIA";
+
+            $id=area::orderBy("GAU","DESC")->take(1)->first();
+
+            if ($id==null) {
+                $t=1;
+                $dato_area=area::where('id',1)->first();
+                area::create(["id" => $t,"PAU" => $t]);
+            }else{
+                $t=$id->PAU;
+                $t=$t+1;
+                $dato_area=area::where('id',1)->first();
+                $dato_area->PAU=$t;
+                $dato_area->save();
+            }
+        }else if ($dato=="PER") {
+            $especialidad="ENTREGA DE RESULTADOS";
+
+            $id=area::orderBy("PER","DESC")->take(1)->first();
+
+            if ($id==null) {
+                $t=1;
+                $dato_area=area::where('id',1)->first();
+                area::create(["id" => $t,"PER" => $t]);
+            }else{
+                $t=$id->PER;
+                $t=$t+1;
+                $dato_area=area::where('id',1)->first();
+                $dato_area->PER=$t;
+                $dato_area->save();
+            }
+        }else if ($dato=="PL") {
+            $especialidad="LABORATORIO";
+
+            $id=area::orderBy("PL","DESC")->take(1)->first();
+
+            if ($id==null) {
+                $t=1;
+                $dato_area=area::where('id',1)->first();
+                area::create(["id" => $t,"PL" => $t]);
+            }else{
+                $t=$id->PL;
+                $t=$t+1;
+                $dato_area=area::where('id',1)->first();
+                $dato_area->PL=$t;
+                $dato_area->save();
+            }
+        }else if ($dato=="PAN") {
+            $especialidad="ANGIOGRAFIA";
+
+            $id=area::orderBy("PL","DESC")->take(1)->first();
+
+            if ($id==null) {
+                $t=1;
+                $dato_area=area::where('id',1)->first();
+                area::create(["id" => $t,"PAN" => $t]);
+            }else{
+                $t=$id->PAN;
+                $t=$t+1;
+                $dato_area=area::where('id',1)->first();
+                $dato_area->PAN=$t;
+                $dato_area->save();
             }
         }else{
             $especialidad="vacia";
         }
+
+        /*dd($id->$dato);*/
+        /*$turno = $id.''.$dato;*/
+        /*dd($t);*/
+        $turno=$t.''.$dato;
+        //dd(' dato = '.$dato);
+        /*"dd($turno.'----'.$especialidad);"*/
+        return $return = [
+            'turno' => $turno,
+            'especialidad' => $especialidad
+        ];
+
+    }
+
+
+    public function store(Request $request)
+    {
+
+        dd($request->documento);
+        $dato_turno = request()->except('_token');
+        $prueba = new turno();
 
         $u=$request->turno;
         $v=$t.$u;
         $request->turno=$v;
         $prueba->turno=$request->turno;
         $prueba->documento=$request->documento;
-        $connector = new FilePrintConnector("//172.16.4.33/tmt20");
+        /*$connector = new FilePrintConnector("//172.16.4.33/tmt2");
         $printer = new Printer($connector);
         $printer->setJustification(Printer::JUSTIFY_CENTER);
         $logo=EscposImage::load("logo1.png",false);
@@ -415,14 +638,18 @@ class TurneroController extends Controller
         $printer->setTextSize(1, 1);
         $printer->text("Fecha : ".date("d-m-Y")."    Hora :".date("H:i")."\n");
         $printer -> cut();
-        $printer -> close();
+        $printer -> close();*/
+        /*dd($request->turno,'-',$especialidad,'tmt20');*/
 
-        //var_dump($datos);
+
+        //dd($request->turno,'--',$especialidad,'--TMT2');
+
+        //dd($ticket);
         //dd($dato_turno);
         //dd($prueba);
         //dd($dato_turno);
-        turno::create(["turno" => $prueba->turno,"documento" => $prueba->documento]);
 
+        dd('turno = '.$prueba->turno.' docuemto = '.$prueba->documento);
  /*       if ($vista_tur=1) {
             return view('turnero.principal');
         } else {

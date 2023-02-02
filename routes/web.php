@@ -58,8 +58,14 @@ Route::post('/dashboard', [TurneroController::class,'dashboard'])->name('dashboa
 Route::post('/consultaexterna', [TurneroController::class,'consultaexterna'])->name('consultaexterna');
 Route::post('/principal', [TurneroController::class,'principal'])->name('principal');
 Route::post('/ingresardocumento', [TurneroController::class,'ingresardocumento'])->name('ingresardocumento');
+
 Route::post('/tomardoc_post', [TurneroController::class,'tomardoc_post'])->name('tomardoc_post');
 Route::post('/tomardoc_post_1', [TurneroController::class,'tomardoc_post_1'])->name('tomardoc_post_1');
+
+/*Route::post('/tomardoc_post', 'TurneroController@tomardoc_post');*/
+/*Route::post('/tomardoc_post', [TurneroController::class,'store'])->name('tomardoc_post');
+Route::post('/tomardoc_post_1', [TurneroController::class,'store'])->name('tomardoc_post_1');*/
+
 Route::get('/dashboard', [TurneroController::class,'dashboard'])->name('dashboard');
 Route::get('/index', [TurneroController::class,'index'])->name('index');
 

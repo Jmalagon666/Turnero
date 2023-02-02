@@ -42,9 +42,12 @@ return new class extends Migration
             $table->string('GER',10)->nullable();
             $table->string('GL',10)->nullable();
             $table->string('GAN',10)->nullable();
-
-
-
+            $table->string('PA',10)->nullable();
+            $table->string('PAI',10)->nullable();
+            $table->string('PAU',10)->nullable();
+            $table->string('PER',10)->nullable();
+            $table->string('PL',10)->nullable();
+            $table->string('PAN',10)->nullable();
         });
 
         Schema::create('usuarios',function (Blueprint $table){

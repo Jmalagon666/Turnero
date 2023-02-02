@@ -11,7 +11,7 @@ class area extends Model
     protected $table="area";
     protected $primaryKey = null;
     public $incrementing = false;
-    protected $fillable=["id","GCC","GCME","GCN","GCOE","GRC","GEC","PCME","PCN","PCOE","PRC","PEC","PCC"];
+    protected $fillable=["id","GCC","GCME","GCN","GCOE","GRC","GEC","PCME","PCN","PCOE","PRC","PEC","PCC","GA","GAI","GAU","GER","GL","GAN"];
     public $timestamps = false;
 
 

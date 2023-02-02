@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+           <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,12 @@
     <script src="https://kit.fontawesome.com/6fe6c76279.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+    {{-- impresoras --}}
+    <script type="text/javascript" src="{{asset('js/printer/jquery-1.11.3.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/printer/dependencies/rsvp-3.1.0.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/printer/dependencies/sha-256.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/printer/qz-tray.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/printer/printer.js')}}"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
 
@@ -25,8 +31,9 @@
     </form>
 </div>
 
-<form action="tomardoc_post" method="POST">
+<form name="generar" action="{{route('tomardoc_post')}}" method="POST">
     @csrf
+    <input type="hidden" value="{{$turno}}" name="tur">
     <div class="contenido">
     <input type="hidden" value="{{$request->general}}" name="turno">
     <h1>Ingrese su número de documento</h1>
@@ -71,14 +78,20 @@
     <br>
     <br>
     <div class="numeros3">
-            {{$request->general}}
+      {{$request->general}}
     </div>
 
 </form>
+
+
+</body>
     <script src="js/turnero.js"></script>
     <script type="text/javascript" src="js/datos.js"></script>
 
-</body>
-
+    <script type="text/javascript">
+        let url = "{{asset('signing/sign-message.php')}}";
+        let printer = "{{$ticket['print_name']}}";
+        let ticket = <?php echo $ticket["ticket"] ?>;
+    </script>
 
 </html>

@@ -49,7 +49,7 @@
 
         <div class="col-sm-6">
                 <div>
-                    <form action="#" method="POST">
+                    <form action="general_1" method="POST">
                         @csrf
                         <input type="hidden" name="general" value="P" id="n1" >
                         <h2>
