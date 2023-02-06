@@ -1,4 +1,4 @@
-/*console.log("hola desde le evento---")
+ /*console.log("hola desde le evento---")
 document.addEventListener("load",function(event){
 
 	document.getElementById('llamar').addEventListener("click",()=>{
