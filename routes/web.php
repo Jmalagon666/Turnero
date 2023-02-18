@@ -47,8 +47,8 @@ Route::post('/principal_1', [TurneroController::class,'principal_1'])->name('pri
 Route::post('/general_1', [TurneroController::class,'general_1'])->name('general_1');
 Route::post('/cita', [TurneroController::class,'cita'])->name('cita');
 Route::post('/admisiones', [TurneroController::class,'admisiones'])->name('admisiones');
+Route::post('/eliminar', [TurneroController::class,'eliminar'])->name('eliminar');
 Route::post('/ingresardocumento_1', [TurneroController::class,'ingresardocumento_1'])->name('ingresardocumento_1');
-
 
 //piso 4
 
@@ -62,12 +62,21 @@ Route::post('/ingresardocumento', [TurneroController::class,'ingresardocumento']
 Route::post('/tomardoc_post', [TurneroController::class,'tomardoc_post'])->name('tomardoc_post');
 Route::post('/tomardoc_post_1', [TurneroController::class,'tomardoc_post_1'])->name('tomardoc_post_1');
 
+Route::get('/tablaturno',[TurneroController::class,'tablaturno'])->name('tablaturno');
+
+
 /*Route::post('/tomardoc_post', 'TurneroController@tomardoc_post');*/
 /*Route::post('/tomardoc_post', [TurneroController::class,'store'])->name('tomardoc_post');
 Route::post('/tomardoc_post_1', [TurneroController::class,'store'])->name('tomardoc_post_1');*/
 
 Route::get('/dashboard', [TurneroController::class,'dashboard'])->name('dashboard');
 Route::get('/index', [TurneroController::class,'index'])->name('index');
+
+//Reporte
+
+Route::get('/reporte',[TurneroController::class,'reporte'])->name('reporte');
+Route::get('/export',[TurneroController::class,'export'])->name('export');
+
 
 
 

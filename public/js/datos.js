@@ -2,9 +2,10 @@ var doc="";
 function TomarDatos(value){
     var val = "n"+value;
     console.log(val+"---");
-    var datos=document.getElementById(val).value;
-    doc = doc+""+datos;
-    console.log(doc);
+    var datos=document.getElementById(val).value.trim();
+    doc = doc+''+datos;
+    console.log(val+"---");
+    console.log(doc+"*");
     document.getElementById("doc").value=doc;
 }
 

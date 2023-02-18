@@ -85,7 +85,6 @@
 
 
 </body>
-    <script src="js/turnero.js"></script>
     <script type="text/javascript" src="js/datos.js"></script>
 
     <script type="text/javascript">

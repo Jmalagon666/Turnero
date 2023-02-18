@@ -22,6 +22,18 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('informacion',function(Blueprint $table){
+            $table->id();
+            $table->string('nombre',10)->nullable();
+            $table->string('taquilla',10)->nullable();
+            $table->string('turno',50)->nullable();
+            $table->string('tipo_turno',50)->nullable();
+            $table->time('hora_inicio',0)->nullable();
+            $table->time('hora_final',0)->nullable();
+            $table->date('fecha',0)->nullable();
+            $table->bigInteger('tiempo')->nullable();
+        });
+
         Schema::create('area', function (Blueprint $table) {
             $table->bigInteger('id');
             $table->string('GCC',10)->nullable();

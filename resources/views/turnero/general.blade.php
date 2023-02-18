@@ -81,9 +81,5 @@
         </div>
         {{$request->general}}
     </div>
-
-
-
-
 </body>
 </html>

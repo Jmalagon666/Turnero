@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\turno;
 use App\Models\area;
 use App\Models\User;
+use App\Models\informacion;
 use Illuminate\Support\Facades\Auth;
 
 use Mike42\Escpos\EscposImage;
@@ -13,7 +14,12 @@ use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\Printer;
 use App\Models\TcPrint;
 
-
+use App\Exports\UsersExport;
+use Carbon\Carbon;
+use DateTime;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\Case_;
 
 class TurneroController extends Controller
 {
@@ -120,10 +126,11 @@ class TurneroController extends Controller
     public function ingresardocumento_1(request $request){
         $id=turno::orderBy("id","DESC")->take(1)->first();
         $turnoPrint = $this->validador($request->general);
-        turno::create(["turno" => $turnoPrint['turno'],"documento" => '99999999']);
+        /* turno::create(["turno" => $turnoPrint['turno'],"documento" => '99999999']); */
         $ticket = $this->ticketPrint($turnoPrint['turno'], $turnoPrint['especialidad'], 'TMT2');
         return view('turnero.ingresardocumento_1',compact('id','request','ticket'));
     }
+
     public function ticketPrint($position, $category, $print){
         /*
             NOMBRE DE LA IMPRESORA
@@ -153,8 +160,12 @@ class TurneroController extends Controller
     }
 
     public function tomardoc_post(request $request){
-       /*dd($request->all());*/
+        $espe= $this->validador($request->turno);
+
         turno::create(["turno" => $request->tur,"documento" => $request->documento]);
+        $date = Carbon::now();
+        $fecha=$date->format('Y-m-d');
+        informacion::create(["turno" => $request->tur,"hora_inicio" => now()->toTimeString(),"hora_final"=> null,"tipo_turno" => $espe['especialidad'],"fecha"=>$fecha]);
         return view('turnero.principal',compact('request'));
     }
 
@@ -190,7 +201,7 @@ class TurneroController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -675,17 +686,30 @@ class TurneroController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $turno)
-    {
-       /* dd($request->id_usu," ",$turno);
-        dd("holaaaaaaaaaaaaaaaaaaaaaaaa");*/
-        $tur_usu = Auth::user()->turno;
-        $tur_usu=user::where('id',$request->id_usu)->first();
-        $tur_usu->turno =$turno;
-        $tur_usu->save();
+    public function edit(Request $request, $turno){
 
-        $tur =turno::where('turno',$turno);
-        $tur->delete();
+     $inf=json_decode($request->usu);
+
+
+
+    $infi = informacion::where('turno',$turno);
+
+
+    $infi->update
+    ([
+        'nombre' => $inf->name,
+        'taquilla' => $inf->taquilla,
+        'hora_final'=>now()->toTimeString(),
+    ]);
+
+    $tur_usu = Auth::user()->turno;
+    $tur_usu=user::where('id',$inf->id)->first();
+    $tur_usu->turno = $turno;
+    $tur_usu->save();
+
+    $tur =turno::where('turno',$turno);
+    $tur->delete();
+
 
         return redirect()->route('dashboard');
     }
@@ -717,16 +741,49 @@ class TurneroController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+
+    public function eliminar($id){
+       /* dd($request); */
         $tur =turno::where('turno',$id);
         $tur->delete();
 
+       return redirect()->route('dashboard');
+    }
+
+
+    public function destroy($id)
+    {
+       /* dd($id);
+        $tur =turno::where('turno',$id);
+        $tur->delete();*/
+
         $tur_usu=user::where('turno',$id)->first();
-        $tur_usu->turno ="";
+       /* dd($tur_usu->turno);*/
+        $tur_usu->turno="";
         $tur_usu->save();
+
 
        return redirect()->route('dashboard');
     }
+
+
+    public function reporte(){
+
+        return view('turnero.export');
+    }
+
+    public function export(){
+         return Excel::download(new UsersExport,'Reporte.xlsx');
+    }
+
+    public function tablaturno(){
+        $turnos=turno::orderBy("id","DESC")->take(10)->get();
+        $id=turno::orderBy("id","DESC")->take(1)->first();
+
+        return view('turnero.tablaturno',compact('turnos','id'));
+    }
+
+
+
 
 }

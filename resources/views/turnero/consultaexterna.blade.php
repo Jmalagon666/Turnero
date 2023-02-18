@@ -57,7 +57,7 @@
                         @csrf
                         <input type="hidden" name="general" value="{{$request->general."ME"}}" id="n1" >
                         <h2>
-                            <button type="submit" value="P" id="n1" class="boton_menu">MEDICINA EXTERNA</button>
+                            <button type="submit" value="P" id="n1" class="boton_menu">MEDICINA INTERNA</button>
                         </h2>
                     </form>
                 </div>

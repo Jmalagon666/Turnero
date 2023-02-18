@@ -17,6 +17,11 @@ body{
     height: 50px;
 } */
 
+iframe {
+    width: 100%;
+    height: 100%;
+
+}
 
 .cabecera{
     background: #a78d8d;

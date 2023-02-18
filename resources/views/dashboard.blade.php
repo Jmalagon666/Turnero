@@ -8,16 +8,16 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <link rel="stylesheet" href="css/usuario.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-        <link href="{{ asset('assets/css/@fortawesome/fontawesome-free/css/all.css') }}" rel="stylesheet" type="text/css">
+       {{--  <link href="{{ asset('assets/css/@fortawesome/fontawesome-free/css/all.css') }}" rel="stylesheet" type="text/css"> --}}
         <script src="https://kit.fontawesome.com/6fe6c76279.js" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
-{{--         <?php
-        echo("<meta http-equiv='refresh' content='20'>");
-        echo date('H:i:s Y-m-d');
+         <?php
+        echo("<meta http-equiv='refresh' content='10'>");
+        /*echo date('H:i:s Y-m-d');*/
         ?>
- --}}        <title>Usuario</title>
+         <title>Usuario</title>
 
     </head>
     <body>
@@ -99,7 +99,7 @@
                                     <button class="bot" type="button" onclick="leerTexto('{{$tur->turno."."."Modulo".Auth::user()->taquilla}}')">Llamar</button>
                                     </div>
                                     <div  class="acc3" >
-                                    <form action="{{route('turnero.destroy',$tur->turno,2)}}" method="post">
+									<form action="{{route('turnero.destroy',$tur->turno,2)}}" method="post">
                                                 @csrf
                                                 @method('DELETE')
                                                 <input class="bot" type="submit" value="Finalizar Turno">
@@ -265,7 +265,7 @@
                                         <form action="{{route('turnero.edit',$turno->turno)}}">
                                             @csrf
                                             @method('PUT')
-                                            <input type="hidden" value="{{Auth::user()->id}}" name="id_usu">
+                                            <input type="hidden" value="{{Auth::user()}}" name="usu">
                                             <input class="boton_acciones1"  type="submit" value="Seleccionar">
                                         </form>
 
@@ -280,11 +280,11 @@
                                 </th>
                                 <th>
                                     <td>
-                                        <form action="{{route('turnero.destroy',$turno->turno)}}" method="post">
+                               {{--          <form action="{{route('eliminar')}}" method="post">
                                                 @csrf
                                                 @method('DELETE')
-                                                <input class="boton_acciones" type="submit" value="Eliminar">
-                                        </form>
+                                                <input class="boton_acciones" type="submit" value="{{$turno->turno}}">
+                                        </form> --}}
                                     </td>
                                 </th>
                         </table>

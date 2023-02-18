@@ -1,21 +1,3 @@
- /*console.log("hola desde le evento---")
-document.addEventListener("load",function(event){
-
-	document.getElementById('llamar').addEventListener("click",()=>{
-		console.log("hola desde le evento")
-		decir(document.getElementById("texto").value)
-
-	});
- fun
-	function decir(texto) {
-
-		speechSynthesis.speak(new SpeechSynthesisUtterance(texto));
-	}
-
-});
-
-*/
-
 function leerTexto(texto){
     const speech = new SpeechSynthesisUtterance();
     speech.continuous = false;
